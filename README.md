@@ -1,4 +1,3 @@
-```
 # EV Telemetry Data Pipeline (Hot/Cold Architecture)
 
 ## 🚀 Project Overview
