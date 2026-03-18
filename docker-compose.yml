@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+
+  hot-db:
+    image: timescale/timescaledb:latest-pg14
+    container_name: hot-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  data-tools:
+    build: .
+    container_name: data-tools
+    volumes:
+      - .:/app
+    depends_on:
+      hot-db:
+        condition: service_healthy
+    env_file:
+      - .env
+    command: sleep infinity
+
+volumes:
+  db_data:
